@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <form action="" method="post">
+      <input type="url" name="url">
+      <input type="submit"> 
+    </form>
+    <ol>
+      <% bookmarks.forEach(function(bm) {  %>
+        <li>
+          <a target="_blank" href="<%= bm.url %>">
+            <%= bm.title %>
+          </a>
+        </li>
+      <% }) %>
+    </ol>
+  </body>
+</html>
