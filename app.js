@@ -5,8 +5,11 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
+// var routes = require('./routes/index');
+// var users = require('./routes/users');
+var request = require('request');
+var cheerio = require('cheerio');
+var db = require('pg-bricks').configure('/var/run/postgresql bm');
 
 var app = express();
 
@@ -22,8 +25,33 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
-app.use('/users', users);
+// app.use('/', routes);
+// app.use('/users', users);
+console.log(app.get('env'));
+
+app.get('/', function(req, res, next) {
+  db.select().from('bookmarks').rows(function(err, bm) {
+    if (err) return next(err);
+
+    res.render('index', { bookmarks: bm });
+  });
+});
+
+app.post('/', function(req, res, next) {
+  request(req.body.url, function(err, resp, body) {
+    if (err) return next(err);
+
+    var $ = cheerio.load(body);
+    var title = $('title').text().trim() || req.body.url;
+
+    db.insert('bookmarks', {
+      url: req.body.url,
+      title: title
+    }).run(function() {
+      res.redirect('/');
+    });
+  });
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
