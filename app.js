@@ -27,12 +27,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // app.use('/', routes);
 // app.use('/users', users);
-console.log(app.get('env'));
 
 app.get('/', function(req, res, next) {
   db.select().from('bookmarks').rows(function(err, bm) {
     if (err) return next(err);
-
     res.render('index', { bookmarks: bm });
   });
 });
@@ -40,10 +38,8 @@ app.get('/', function(req, res, next) {
 app.post('/', function(req, res, next) {
   request(req.body.url, function(err, resp, body) {
     if (err) return next(err);
-
     var $ = cheerio.load(body);
     var title = $('title').text().trim() || req.body.url;
-
     db.insert('bookmarks', {
       url: req.body.url,
       title: title
