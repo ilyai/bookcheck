@@ -9,7 +9,7 @@ var bodyParser = require('body-parser');
 // var users = require('./routes/users');
 var request = require('request');
 var cheerio = require('cheerio');
-var db = require('pg-bricks').configure('/var/run/postgresql bm');
+var db = require('pg-bricks').configure('/var/run/postgresql bookcheck');
 
 var app = express();
 
