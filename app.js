@@ -10,8 +10,14 @@ var bodyParser = require('body-parser');
 var request = require('request');
 var cheerio = require('cheerio');
 var db = require('pg-bricks').configure('/var/run/postgresql bookcheck');
+var bookmarks = require('./lib/bookmarks')(db);
+var auth = require('http-auth');
 
 var app = express();
+var basic = auth.basic({
+  realm: "Authorization Required",
+  file: __dirname + "/.htpasswd"
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -24,28 +30,22 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(auth.connect(basic));
 
 // app.use('/', routes);
 // app.use('/users', users);
 
 app.get('/', function(req, res, next) {
-  db.select().from('bookmarks').rows(function(err, bm) {
+  bookmarks.get(function(err, bm) {
     if (err) return next(err);
     res.render('index', { bookmarks: bm });
   });
 });
 
 app.post('/', function(req, res, next) {
-  request(req.body.url, function(err, resp, body) {
+  bookmarks.add(req.body.url, function(err) {
     if (err) return next(err);
-    var $ = cheerio.load(body);
-    var title = $('title').text().trim() || req.body.url;
-    db.insert('bookmarks', {
-      url: req.body.url,
-      title: title
-    }).run(function() {
-      res.redirect('/');
-    });
+    res.redirect('/');
   });
 });
 
