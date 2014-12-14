@@ -1,0 +1,19 @@
+#!/usr/bin/env node
+var debug = require('debug');
+var db = require('pg-bricks').configure('/var/run/postgresql bookcheck');
+var bookmarks = require('../lib/bookmarks')(db);
+
+debug.enable('import');
+debug = debug('import');
+process.stdin.setEncoding('utf8');
+
+process.stdin.on('readable', function() {
+  var line = process.stdin.read();
+  if (line !== null) line = line.trim();
+  if (!line) return;
+  debug(line);
+});
+
+process.stdin.on('end', function() {
+  debug("completed.\n");
+});
