@@ -2,21 +2,31 @@
 <html>
   <head>
     <title>Book Check</title>
+    <link rel='stylesheet' href='/stylesheets/normalize.css' />
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-    <form action="/" method="post">
-      <input type="url" name="url">
-      <input type="submit"> 
-    </form>
-    <ol>
-      <% bookmarks.forEach(function(bm) {  %>
-        <li>
-          <a target="_blank" href="<%= bm.url %>">
-            <%= bm.title %>
-          </a>
-        </li>
-      <% }) %>
-    </ol>
+    <div class="container">
+
+      <form action="/" method="post">
+        <div class="row">
+          <div class="six columns">
+              <input type="url" class="u-full-width" name="url">
+              <input type="submit" value="Submit"> 
+          </div>
+        </div>
+      </form>
+
+      <ol>
+        <% bookmarks.forEach(function(bm) {  %>
+          <li>
+            <a target="_blank" href="<%= bm.url %>">
+              <%= bm.title %>
+            </a>
+          </li>
+        <% }) %>
+      </ol>
+
+    </div>
   </body>
 </html>
