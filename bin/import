@@ -1,19 +1,33 @@
 #!/usr/bin/env node
-var debug = require('debug');
+var debug = require('debug')('import');
 var db = require('pg-bricks').configure('/var/run/postgresql bookcheck');
 var bookmarks = require('../lib/bookmarks')(db);
+var async = require('async');
 
-debug.enable('import');
-debug = debug('import');
+var q = async.queue(function(task, callback) {
+  debug(task.url);
+  bookmarks.add(task.url, function(err) {
+    if (err) debug(err);
+    callback();
+  });
+}, 1);
+
 process.stdin.setEncoding('utf8');
 
 process.stdin.on('readable', function() {
-  var line = process.stdin.read();
-  if (line !== null) line = line.trim();
-  if (!line) return;
-  debug(line);
+  var chunk = process.stdin.read(),
+      urls = [];
+  if (chunk !== null) urls = chunk.split('\n');
+  urls.forEach(function(url) {
+    if (!url) return;
+    q.push({ url: url });
+  });
 });
 
 process.stdin.on('end', function() {
-  debug("completed.\n");
+  async.whilst(
+    function() { return q.running(); },
+    function(callback) { setTimeout(callback, 100); },
+    function() { debug("completed.\n"); db.pg.end(); }
+  );
 });
