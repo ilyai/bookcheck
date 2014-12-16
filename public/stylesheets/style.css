@@ -1,8 +1,23 @@
 body {
   padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font: 12px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
+}
+
+.submit-bar {
+  margin: 0 0 2% 5%;
+}
+
+.bookmarks {
+  overflow: hidden;
+}
+
+li {
+  float: left;
+  margin-left: 5%;
+  width: 40%;
+  word-break: break-all;
 }
