@@ -1,0 +1,50 @@
+@import "normalize";
+
+body {
+  padding: 50px;
+  font-size: 12px;
+  font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #000;
+  &:hover {
+    background: #000;
+    color: #fff;
+  }
+}
+
+.btn {
+  padding: .8em;
+  background: transparent;
+  border: 1px solid #000;
+  border-radius: 3px;
+  &:hover,
+  &:active {
+    background: #000;
+    color: #fff;
+  }
+}
+
+.submit-bar {
+  margin: 0 0 2% 5%;
+  input[name="url"] {
+    width: 70%;
+    padding: .8em;
+    border-style: solid;
+    border-width: 1px;
+  }
+}
+
+.bookmarks {
+  max-width: 100em;
+  overflow: hidden;
+  padding: 0;
+  li {
+    float: left;
+    margin-left: 5%;
+    width: 40%;
+    word-break: break-all;
+  }
+}
+
