@@ -19,7 +19,7 @@
       <ol class="bookmarks">
         <% bookmarks.forEach(function(bm) {  %>
           <li>
-            <a target="_blank" href="<%= bm.url %>" class="link">
+            <a target="_blank" href="<%= bm.url %>" class="link" data-id="<%= bm.id %>">
               <%= truncate(bm.title, 50) %>
             </a>
             <a href="#" class="destroy" data-id="<%= bm.id %>">&times;</a>

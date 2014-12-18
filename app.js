@@ -27,7 +27,7 @@ app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
-app.use(logger('dev'));
+app.use(logger('short'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -50,6 +50,13 @@ app.post('/bookmarks', function(req, res, next) {
   bookmarks.add(req.body.url, function(err) {
     if (err) return next(err);
     res.redirect('/');
+  });
+});
+
+app.patch('/bookmarks/:id/hit', function(req, res, next) {
+  bookmarks.hit(req.params.id, function(err) {
+    if (err) return next(err);
+    res.sendStatus(200);
   });
 });
 

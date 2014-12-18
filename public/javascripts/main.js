@@ -6,5 +6,9 @@ $(document).ready(function() {
     $.ajax({ url: '/bookmarks/' + id, type: 'delete' })
       .done(function() { bookmark.remove(); })
       .fail(function(jqxhr, status, error) { $.error(error); });
+  }).on('click', '.link', function() {
+    var id = $(this).data('id');
+    $.ajax({ url: '/bookmarks/' + id + '/hit', type: 'patch' })
+      .fail(function(jqxhr, status, error) { $.error(error); });
   });
 });
