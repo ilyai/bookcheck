@@ -12,6 +12,8 @@ var cheerio = require('cheerio');
 var db = require('pg-bricks').configure('/var/run/postgresql bookcheck');
 var bookmarks = require('./lib/bookmarks')(db);
 var auth = require('http-auth');
+var _ = require('lodash');
+var helpers = require('./lib/helpers');
 
 var app = express();
 var basic = auth.basic({
@@ -35,6 +37,7 @@ app.use(auth.connect(basic));
 
 // app.use('/', routes);
 // app.use('/users', users);
+_.assign(app.locals, helpers);
 
 app.get('/', function(req, res, next) {
   bookmarks.get(function(err, bm) {
@@ -43,10 +46,18 @@ app.get('/', function(req, res, next) {
   });
 });
 
-app.post('/', function(req, res, next) {
+app.post('/bookmarks', function(req, res, next) {
   bookmarks.add(req.body.url, function(err) {
     if (err) return next(err);
     res.redirect('/');
+  });
+});
+
+app.delete('/bookmarks/:id', function(req, res, next) {
+  bookmarks.destroy(req.params.id, function(err) {
+    console.dir(arguments);
+    if (err) return next(err);
+    res.sendStatus(200);
   });
 });
 
