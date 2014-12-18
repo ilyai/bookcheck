@@ -3,12 +3,14 @@
   <head>
     <title>Book Check</title>
     <link rel="stylesheet" href="/stylesheets/style.css" />
+    <script src="/javascripts/jquery-1.11.1.min.js"></script>
+    <script src="/javascripts/main.js"></script>
   </head>
   <body>
     <div class="container">
 
       <div class="submit-bar">
-        <form action="/" method="post">
+        <form action="/bookmarks" method="post">
           <input type="url" class="text control" name="url">
           <input type="submit" class="btn" value="Submit"> 
         </form>
@@ -17,9 +19,10 @@
       <ol class="bookmarks">
         <% bookmarks.forEach(function(bm) {  %>
           <li>
-            <a target="_blank" href="<%= bm.url %>">
-              <%= bm.title.substring(0, 50).trim() %>
+            <a target="_blank" href="<%= bm.url %>" class="link">
+              <%= truncate(bm.title, 50) %>
             </a>
+            <a href="#" class="destroy" data-id="<%= bm.id %>">&times;</a>
           </li>
         <% }) %>
       </ol>
