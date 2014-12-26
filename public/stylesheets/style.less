@@ -26,13 +26,27 @@ a {
   }
 }
 
-.submit-bar {
+.text.control {
+  outline: none;
+  border: 1px solid #000;
+}
+
+.top-bar {
   margin: 0 0 2% 5%;
-  .text.control {
+  overflow: hidden;
+  form#submit_url {
+    float: left;
     width: 70%;
+  }
+  .text.control {
+    width: 50%;
     padding: .8em;
-    outline: none;
-    border: 1px solid #000;
+    width: ~"calc(100% - 8em)";
+  }
+  .search.control {
+    width: 20%;
+    float: right;
+    border-radius: 50px;
   }
 }
 
