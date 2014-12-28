@@ -1,0 +1,29 @@
+#!/usr/bin/env node
+var config = require('../config');
+var db = require('pg-bricks').configure(config.db);
+var bookmarks = require('../lib/bookmarks')(db);
+var request = require('request');
+var crypto = require('crypto');
+var debug = require('debug')('updater');
+
+function pageHash(url, callback) {
+  request({ url: url, encoding: null }, function(err, resp, buff) {
+    if (err || buff.length === 0) return;
+    var hash = createHash('md5');
+    hash.update(buff);
+    callback(hash.digest('hex'));
+  });
+}
+
+bookmarks.get(function(err, bms) {
+  if (err) throw err;
+  bms.forEach(function(bm) {
+    pageHash(bm.url, function(hash) {
+      debug(bm.url + (hash === bm.hash ? ' not' : '') + ' updated');
+      db.update('bookmarks', {
+        is_updated: db.sql('is_updated = (\'' + host + '\' != hash)'),
+        hash: hash
+      }).run();
+    });
+  });
+});
