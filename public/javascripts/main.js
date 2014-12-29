@@ -14,7 +14,8 @@ $(document).ready(function() {
 
   // Open a link
   bookmarks.on('click', '.link', function(event) {
-    var id = $(this).data('id');
+    var link = $(this);
+    var id = link.data('id');
     if (/chrome/i.test(navigator.userAgent)) {
       var a = document.createElement('a');
       a.target = '_blank';
@@ -30,6 +31,7 @@ $(document).ready(function() {
       event.preventDefault();
     }
     $.ajax({ url: '/bookmarks/' + id + '/hit', type: 'patch' })
+      .done(function() { link.removeClass('updated'); })
       .fail(function(jqxhr, status, error) { $.error(error); });
   });
 

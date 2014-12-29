@@ -4,26 +4,28 @@ var db = require('pg-bricks').configure(config.db);
 var bookmarks = require('../lib/bookmarks')(db);
 var request = require('request');
 var crypto = require('crypto');
+var async = require('async');
 var debug = require('debug')('updater');
 
 function pageHash(url, callback) {
   request({ url: url, encoding: null }, function(err, resp, buff) {
-    if (err || buff.length === 0) return;
-    var hash = createHash('md5');
+    if (err || buff.length === 0) return callback(err, null);
+    var hash = crypto.createHash('md5');
     hash.update(buff);
-    callback(hash.digest('hex'));
+    callback(null, hash.digest('hex'));
   });
 }
 
 bookmarks.get(function(err, bms) {
   if (err) throw err;
-  bms.forEach(function(bm) {
-    pageHash(bm.url, function(hash) {
+  async.each(bms, function(bm, callback) {
+    pageHash(bm.url, function(err, hash) {
+      if (err) { return callback(); }
       debug(bm.url + (hash === bm.hash ? ' not' : '') + ' updated');
       db.update('bookmarks', {
-        is_updated: db.sql('is_updated = (\'' + host + '\' != hash)'),
+        is_updated: db.sql('(\'' + hash + '\' != hash)'),
         hash: hash
-      }).run();
+      }).where('id', bm.id).run(function() { callback(); });
     });
-  });
+  }, function() { db.pg.end(); });
 });
