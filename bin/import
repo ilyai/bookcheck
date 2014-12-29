@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 var debug = require('debug')('import');
-var db = require('pg-bricks').configure('/var/run/postgresql bookcheck');
+var config = require('../config');
+var db = require('pg-bricks').configure(config.db);
 var bookmarks = require('../lib/bookmarks')(db);
 var async = require('async');
 
